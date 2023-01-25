@@ -16,6 +16,7 @@ logging.basicConfig(
 logging.getLogger("discord.gateway").setLevel(logging.CRITICAL)
 
 TOKEN = os.environ['DISCORD_TOKEN']
+CHANNEL = client.get_channel(os.environ['DISCORD_CHANNEL'])
 
 TOTAL = 780
 OVECHKIN_GOAL = False
@@ -30,7 +31,6 @@ async def on_ready():
 @tasks.loop()
 async def check():
     global OVECHKIN_GOAL
-    channel = client.get_channel(os.environ['DISCORD_CHANNEL'])
     first = []
     second = []
     get_goals(first)
@@ -41,19 +41,20 @@ async def check():
         get_goals(second)
         if not second:
             pass
-        difference = set(first) ^ set(second)
-        if (len(difference) == 0):
-            pass
         else:
-            logging.info("Goal(s) detected")
-            for goal in difference:
-                logging.info(goal)
-                json_obj = convert_to_json(goal)
-                detect_ovechkin_goal(json_obj)
-            if OVECHKIN_GOAL:
-                logging.info("Sending message to discord")
-                await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
-                OVECHKIN_GOAL = False
+            difference = set(first) ^ set(second)
+            if (len(difference) == 0):
+                pass
+            else:
+                logging.info("Goal(s) detected")
+                for goal in difference:
+                    logging.info(goal)
+                    json_obj = convert_to_json(goal)
+                    detect_ovechkin_goal(json_obj)
+                if OVECHKIN_GOAL:
+                    logging.info("Sending message to discord")
+                    await CHANNEL.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
+                    OVECHKIN_GOAL = False
 
 def get_goals(list):
     url = 'https://nhl-score-api.herokuapp.com/api/scores/latest'
