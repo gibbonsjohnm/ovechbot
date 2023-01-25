@@ -3,9 +3,11 @@ import json
 import discord
 import asyncio
 from discord.ext import tasks
-import pytz
 import logging
 import os
+import datetime
+import pytz
+from pytz import timezone
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -23,7 +25,6 @@ client = discord.Client(intents=discord.Intents.default())
 @client.event
 async def on_ready():
     logging.info(f'{client.user} has connected to Discord!')
-    channel = client.get_channel(int(os.environ['DISCORD_CHANNEL']))
     check.start()
 
 @tasks.loop()
@@ -33,10 +34,10 @@ async def check():
     first = []
     second = []
     get_goals(first)
+    await asyncio.sleep(60)
     if not first:
         pass
     else:
-        await asyncio.sleep(60)
         get_goals(second)
         if not second:
             pass
@@ -59,15 +60,22 @@ def get_goals(list):
     resp = requests.get(url=url)
     data = resp.json()
 
+    current_time = datetime.datetime.now(pytz.timezone('US/Pacific'))
+    current_date = current_time.strftime("%Y-%m-%d")
+
     try:
-        games = data['games']
-        for game in games:
-            if game['status']['state'] == "LIVE":
-                goals = game['goals']
-                for goal in goals:
-                    list.append(str(goal))
-            else:
-                pass
+        games_date = data['date']['raw']
+        if str(current_date) == games_date:
+            games = data['games']
+            for game in games:
+                if game['status']['state'] == "LIVE":
+                    goals = game['goals']
+                    for goal in goals:
+                        list.append(str(goal))
+                else:
+                    pass
+        else:
+            pass
     except TypeError:
         pass
         
