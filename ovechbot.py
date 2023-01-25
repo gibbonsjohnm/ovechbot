@@ -15,17 +15,16 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 logging.getLogger("discord.gateway").setLevel(logging.CRITICAL)
 
+CLIENT = discord.Client(intents=discord.Intents.default())
 TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL = client.get_channel(os.environ['DISCORD_CHANNEL'])
+CHANNEL = CLIENT.get_channel(os.environ['DISCORD_CHANNEL'])
 
 TOTAL = 780
 OVECHKIN_GOAL = False
 
-client = discord.Client(intents=discord.Intents.default())
-
-@client.event
+@CLIENT.event
 async def on_ready():
-    logging.info(f'{client.user} has connected to Discord!')
+    logging.info(f'{CLIENT.user} has connected to Discord!')
     check.start()
 
 @tasks.loop()
@@ -53,7 +52,7 @@ async def check():
                     detect_ovechkin_goal(json_obj)
                 if OVECHKIN_GOAL:
                     logging.info("Sending message to discord")
-                    await CHANNEL.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
+                    await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
                     OVECHKIN_GOAL = False
 
 def get_goals(list):
@@ -108,4 +107,4 @@ def detect_ovechkin_goal(json):
     except TypeError:
         pass
 
-client.run(TOKEN)
+CLIENT.run(TOKEN)
