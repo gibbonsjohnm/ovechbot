@@ -20,6 +20,7 @@ TOKEN = os.environ['DISCORD_TOKEN']
 CHANNEL = CLIENT.get_channel(os.environ['DISCORD_CHANNEL'])
 
 TOTAL = 780
+SEASON_TOTAL_SET= set([])
 OVECHKIN_GOAL = False
 
 @CLIENT.event
@@ -50,10 +51,14 @@ async def check():
                     logging.info(goal)
                     json_obj = convert_to_json(goal)
                     detect_ovechkin_goal(json_obj)
-                if OVECHKIN_GOAL:
-                    logging.info("Sending message to discord")
-                    await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
-                    OVECHKIN_GOAL = False
+        ### double check in case we missed the goal ###
+        for goal in first:
+            json_obj = convert_to_json(goal)
+            detect_ovechkin_goal(json_obj)
+        if OVECHKIN_GOAL:
+            logging.info("Sending message to discord")
+            await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
+            OVECHKIN_GOAL = False
 
 def get_goals(list):
     url = 'https://nhl-score-api.herokuapp.com/api/scores/latest'
@@ -90,8 +95,8 @@ def convert_to_json(string):
 def detect_ovechkin_goal(json):
     global OVECHKIN_GOAL
     global TOTAL
-    global SEASON_TOTAL
     global SEASON_TOTAL_SET
+
     try:
         if json['scorer']['player'] == "Alex Ovechkin":
             SEASON_TOTAL = json['scorer']['seasonTotal']
