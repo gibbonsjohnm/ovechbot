@@ -31,6 +31,7 @@ async def on_ready():
 @tasks.loop()
 async def check():
     global OVECHKIN_GOAL
+    global CHANNEL
     first = []
     second = []
     get_goals(first)
