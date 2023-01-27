@@ -22,9 +22,9 @@ TOTAL = 780
 SEASON_TOTAL_SET= set([])
 OVECHKIN_GOAL = False
 
-@CLIENT.event
+@client.event
 async def on_ready():
-    logging.info(f'{CLIENT.user} has connected to Discord!')
+    logging.info(f'{client.user} has connected to Discord!')
     check.start()
 
 @tasks.loop()
@@ -57,7 +57,7 @@ async def check():
             detect_ovechkin_goal(json_obj)
         if OVECHKIN_GOAL:
             logging.info("Sending message to discord")
-            await CHANNEL.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
+            await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
             OVECHKIN_GOAL = False
 
 def get_goals(list):
@@ -112,4 +112,4 @@ def detect_ovechkin_goal(json):
     except TypeError:
         pass
 
-CLIENT.run(TOKEN)
+client.run(TOKEN)
