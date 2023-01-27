@@ -15,9 +15,8 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S')
 logging.getLogger("discord.gateway").setLevel(logging.CRITICAL)
 
-CLIENT = discord.Client(intents=discord.Intents.default())
+client = discord.Client(intents=discord.Intents.default())
 TOKEN = os.environ['DISCORD_TOKEN']
-CHANNEL = CLIENT.get_channel(os.environ['DISCORD_CHANNEL'])
 
 TOTAL = 780
 SEASON_TOTAL_SET= set([])
@@ -31,7 +30,7 @@ async def on_ready():
 @tasks.loop()
 async def check():
     global OVECHKIN_GOAL
-    global CHANNEL
+    channel = client.get_channel(os.environ['DISCORD_CHANNEL'])
     first = []
     second = []
     get_goals(first)
