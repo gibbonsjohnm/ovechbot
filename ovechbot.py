@@ -57,7 +57,7 @@ async def check():
             detect_ovechkin_goal(json_obj)
         if OVECHKIN_GOAL:
             logging.info("Sending message to discord")
-            await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
+            await CHANNEL.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
             OVECHKIN_GOAL = False
 
 def get_goals(list):
