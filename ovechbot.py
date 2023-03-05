@@ -18,7 +18,8 @@ logging.getLogger("discord.gateway").setLevel(logging.CRITICAL)
 client = discord.Client(intents=discord.Intents.default())
 TOKEN = os.environ['DISCORD_TOKEN']
 
-TOTAL = 780
+INITIAL_TOTAL = 780
+SEASON_TOTAL = 0
 SEASON_TOTAL_SET= set([])
 OVECHKIN_GOAL = False
 
@@ -27,38 +28,23 @@ async def on_ready():
     logging.info(f'{client.user} has connected to Discord!')
     check.start()
 
-@tasks.loop()
+@tasks.loop(seconds=60)
 async def check():
     global OVECHKIN_GOAL
     channel = client.get_channel(int(os.environ['DISCORD_CHANNEL']))
     first = []
-    second = []
     get_goals(first)
-    await asyncio.sleep(60)
     if not first:
         pass
     else:
-        get_goals(second)
-        if not second:
-            pass
-        else:
-            difference = set(first) ^ set(second)
-            if (len(difference) == 0):
-                pass
-            else:
-                logging.info("Goal(s) detected")
-                for goal in difference:
-                    logging.info(goal)
-                    json_obj = convert_to_json(goal)
-                    detect_ovechkin_goal(json_obj)
         ### double check in case we missed the goal ###
         for goal in first:
             json_obj = convert_to_json(goal)
             detect_ovechkin_goal(json_obj)
-        if OVECHKIN_GOAL:
-            logging.info("Sending message to discord")
-            await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{TOTAL}** :rotating_light:')
-            OVECHKIN_GOAL = False
+            if OVECHKIN_GOAL:
+                logging.info("Sending message to discord")
+                await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{INITIAL_TOTAL + SEASON_TOTAL}** :rotating_light:')
+                OVECHKIN_GOAL = False
 
 def get_goals(list):
     url = 'https://nhl-score-api.herokuapp.com/api/scores/latest'
@@ -73,12 +59,9 @@ def get_goals(list):
         if str(current_date) == games_date:
             games = data['games']
             for game in games:
-                if game['status']['state'] == "LIVE":
-                    goals = game['goals']
-                    for goal in goals:
-                        list.append(str(goal))
-                else:
-                    pass
+                goals = game['goals']
+                for goal in goals:
+                    list.append(str(goal))
         else:
             pass
     except TypeError:
@@ -94,19 +77,17 @@ def convert_to_json(string):
 
 def detect_ovechkin_goal(json):
     global OVECHKIN_GOAL
-    global TOTAL
-    global SEASON_TOTAL_SET
-
+    global SEASON_TOTAL
     try:
         if json['scorer']['player'] == "Alex Ovechkin":
             SEASON_TOTAL = json['scorer']['seasonTotal']
             if SEASON_TOTAL in SEASON_TOTAL_SET:
                 pass
             else:
+                logging.info(json)
                 logging.info("Ovechkin scored!")
                 OVECHKIN_GOAL = True
                 SEASON_TOTAL_SET.add(SEASON_TOTAL)
-                TOTAL = TOTAL + SEASON_TOTAL
         else:
             pass
     except TypeError:
