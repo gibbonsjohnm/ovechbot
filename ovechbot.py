@@ -23,6 +23,8 @@ SEASON_TOTAL         = 0
 SEASON_TOTAL_SET     = set([])
 OVECHKIN_GOAL        = False
 OVECHKIN_GAME_ACTIVE = False
+HOME_TEAM = ""
+AWAY_TEAM = ""
 
 @client.event
 async def on_ready():
@@ -35,7 +37,7 @@ async def check():
     global OVECHKIN_GAME
     channel = client.get_channel(int(os.environ['DISCORD_CHANNEL']))
     if OVECHKIN_GAME_ACTIVE:
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="for Ovechkin goals"))
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'{HOME_TEAM} vs {AWAY_TEAM}'))
     else:
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="no Caps games :("))
     first = []
@@ -64,7 +66,9 @@ def get_goals(list):
         if str(current_date) == games_date:
             games = data['games']
             for game in games:
-                if game['teams']['away']['abbreviation'] == "WSH" or game['teams']['home']['abbreviation'] == "WSH":
+                HOME_TEAM = game['teams']['home']['abbreviation']
+                AWAY_TEAM = game['teams']['away']['abbreviation']
+                if HOME_TEAM == "WSH" or AWAY_TEAM == "WSH":
                     if game['status']['state'] == "LIVE":
                         OVECHKIN_GAME_ACTIVE = True
                         goals = game['goals']
