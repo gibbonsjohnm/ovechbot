@@ -74,6 +74,8 @@ def get_goals(list):
                         goals = game['goals']
                         for goal in goals:
                             list.append(str(goal))
+                    else:
+                        OVECHKIN_GAME_ACTIVE = False
         else:
             OVECHKIN_GAME_ACTIVE = False
             pass
