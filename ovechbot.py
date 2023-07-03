@@ -16,12 +16,13 @@ logging.basicConfig(
 logging.getLogger("discord.gateway").setLevel(logging.CRITICAL)
 
 client = discord.Client(intents=discord.Intents.default())
-TOKEN = os.environ['DISCORD_TOKEN']
+TOKEN  = os.environ['DISCORD_TOKEN']
 
-INITIAL_TOTAL = 780
-SEASON_TOTAL = 0
-SEASON_TOTAL_SET= set([])
-OVECHKIN_GOAL = False
+INITIAL_TOTAL        = 822
+SEASON_TOTAL         = 0
+SEASON_TOTAL_SET     = set([])
+OVECHKIN_GOAL        = False
+OVECHKIN_GAME_ACTIVE = False
 
 @client.event
 async def on_ready():
@@ -31,13 +32,17 @@ async def on_ready():
 @tasks.loop(seconds=60)
 async def check():
     global OVECHKIN_GOAL
+    global OVECHKIN_GAME
     channel = client.get_channel(int(os.environ['DISCORD_CHANNEL']))
+    if OVECHKIN_GAME_ACTIVE:
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="for Ovechkin goals"))
+    else:
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="no Caps games :("))
     first = []
     get_goals(first)
     if not first:
         pass
     else:
-        ### double check in case we missed the goal ###
         for goal in first:
             json_obj = convert_to_json(goal)
             detect_ovechkin_goal(json_obj)
@@ -59,10 +64,14 @@ def get_goals(list):
         if str(current_date) == games_date:
             games = data['games']
             for game in games:
-                goals = game['goals']
-                for goal in goals:
-                    list.append(str(goal))
+                if game['teams']['away']['abbreviation'] == "WSH" or game['teams']['home']['abbreviation'] == "WSH":
+                    if game['status']['state'] == "LIVE":
+                        OVECHKIN_GAME_ACTIVE = True
+                        goals = game['goals']
+                        for goal in goals:
+                            list.append(str(goal))
         else:
+            OVECHKIN_GAME_ACTIVE = False
             pass
     except TypeError:
         pass
