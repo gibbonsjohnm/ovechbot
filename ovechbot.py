@@ -54,6 +54,8 @@ async def check():
 
 def get_goals(list):
     global OVECHKIN_GAME_ACTIVE
+    global HOME_TEAM
+    global AWAY_TEAM
     url = 'https://nhl-score-api.herokuapp.com/api/scores/latest'
     resp = requests.get(url=url)
     data = resp.json()
