@@ -35,13 +35,12 @@ async def on_ready():
 async def check():
     global OVECHKIN_GOAL
     channel = client.get_channel(int(os.environ['DISCORD_CHANNEL']))
-    print(OVECHKIN_GAME_ACTIVE)
+    first = []
+    get_goals(first)
     if OVECHKIN_GAME_ACTIVE:
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f'{HOME_TEAM} vs {AWAY_TEAM}'))
     else:
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="no Caps games :("))
-    first = []
-    get_goals(first)
     if not first:
         pass
     else:
@@ -71,7 +70,6 @@ def get_goals(list):
                 AWAY_TEAM = game['teams']['away']['abbreviation']
                 if HOME_TEAM == "WSH" or AWAY_TEAM == "WSH":
                     if game['status']['state'] == "LIVE":
-                        print("yes")
                         OVECHKIN_GAME_ACTIVE = True
                         goals = game['goals']
                         for goal in goals:
