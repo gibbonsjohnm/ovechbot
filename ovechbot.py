@@ -68,7 +68,7 @@ def get_goals(list):
         if str(current_date) == games_date:
             games = data['games']
             for game in games:
-                if HOME_TEAM == "WSH" or AWAY_TEAM == "WSH":
+                if game['teams']['home']['abbreviation'] == "WSH" or game['teams']['away']['abbreviation'] == "WSH":
                     HOME_TEAM = game['teams']['home']['abbreviation']
                     AWAY_TEAM = game['teams']['away']['abbreviation']
                     if game['status']['state'] == "LIVE":
