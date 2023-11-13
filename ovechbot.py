@@ -56,7 +56,7 @@ def get_goals(list):
     global OVECHKIN_GAME_ACTIVE
     global HOME_TEAM
     global AWAY_TEAM
-    url = 'https://nhl-score-api.herokuapp.com/api/scores/latest'
+    url = 'https://api-web.nhle.com/v1/score/now'
     resp = requests.get(url=url)
     data = resp.json()
 
@@ -64,20 +64,18 @@ def get_goals(list):
     current_date = current_time.strftime("%Y-%m-%d")
 
     try:
-        games_date = data['date']['raw']
-        if str(current_date) == games_date:
-            games = data['games']
-            for game in games:
-                if game['teams']['home']['abbreviation'] == "WSH" or game['teams']['away']['abbreviation'] == "WSH":
-                    HOME_TEAM = game['teams']['home']['abbreviation']
-                    AWAY_TEAM = game['teams']['away']['abbreviation']
-                    if game['status']['state'] == "LIVE":
-                        OVECHKIN_GAME_ACTIVE = True
-                        goals = game['goals']
-                        for goal in goals:
-                            list.append(str(goal))
-                    else:
-                        OVECHKIN_GAME_ACTIVE = False
+        games = data['games']
+        for game in games:
+            if game['awayTeam']['abbrev'] == "WSH" or game['homeTeam']['abbrev'] == "WSH":
+                HOME_TEAM = game['homeTeam']['abbrev']
+                AWAY_TEAM = game['awayTeam']['abbrev']
+                if game['gameState'] == "LIVE":
+                    OVECHKIN_GAME_ACTIVE = True
+                    goals = game['goals']
+                    for goal in goals:
+                        list.append(str(goal))
+                else:
+                    OVECHKIN_GAME_ACTIVE = False
         else:
             OVECHKIN_GAME_ACTIVE = False
             pass
@@ -96,8 +94,8 @@ def detect_ovechkin_goal(json):
     global OVECHKIN_GOAL
     global SEASON_TOTAL
     try:
-        if json['scorer']['player'] == "Alex Ovechkin":
-            SEASON_TOTAL = json['scorer']['seasonTotal']
+        if json['name']['default'] == "A. Ovechkin":
+            SEASON_TOTAL = json['goalsToDate']
             if SEASON_TOTAL in SEASON_TOTAL_SET:
                 pass
             else:
