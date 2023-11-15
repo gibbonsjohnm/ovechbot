@@ -1,13 +1,9 @@
 import requests
 import json
 import discord
-import asyncio
 from discord.ext import tasks
 import logging
 import os
-import datetime
-import pytz
-from pytz import timezone
 
 logging.basicConfig(
     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -59,10 +55,6 @@ def get_goals(list):
     url = 'https://api-web.nhle.com/v1/score/now'
     resp = requests.get(url=url)
     data = resp.json()
-
-    current_time = datetime.datetime.now(pytz.timezone('US/Pacific'))
-    current_date = current_time.strftime("%Y-%m-%d")
-
     try:
         games = data['games']
         for game in games:
