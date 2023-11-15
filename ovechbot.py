@@ -76,9 +76,6 @@ def get_goals(list):
                         list.append(str(goal))
                 else:
                     OVECHKIN_GAME_ACTIVE = False
-        else:
-            OVECHKIN_GAME_ACTIVE = False
-            pass
     except TypeError:
         pass
         
