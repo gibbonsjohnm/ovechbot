@@ -30,6 +30,7 @@ async def on_ready():
 @tasks.loop(seconds=60)
 async def check():
     global OVECHKIN_GOAL
+    global OVECHKIN_GAME_ACTIVE
     channel = client.get_channel(int(os.environ['DISCORD_CHANNEL']))
     first = []
     get_goals(first)
