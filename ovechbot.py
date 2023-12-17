@@ -66,7 +66,8 @@ def get_goals(list):
                     OVECHKIN_GAME_ACTIVE = True
                     goals = game['goals']
                     for goal in goals:
-                        list.append(str(goal))
+                       list.append(str(goal))
+                    break;
                 else:
                     OVECHKIN_GAME_ACTIVE = False
             else:
