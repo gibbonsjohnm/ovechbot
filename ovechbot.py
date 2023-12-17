@@ -67,9 +67,9 @@ def get_goals(list):
                     goals = game['goals']
                     for goal in goals:
                        list.append(str(goal))
-                    break;
                 else:
                     OVECHKIN_GAME_ACTIVE = False
+                break;
             else:
                 OVECHKIN_GAME_ACTIVE = False
     except TypeError:
