@@ -68,7 +68,6 @@ def get_goals(list):
                     OVECHKIN_GAME_ACTIVE = False
                 goals = game['goals']
                 for goal in goals:
-                    print(goal)
                     list.append(str(goal))
                 break;
             else:
@@ -88,7 +87,7 @@ def detect_ovechkin_goal(json):
     global OVECHKIN_GOAL
     global SEASON_TOTAL
     try:
-        if json['name']['default'] == "A. Ovechkin":
+        if json['playerId'] == 8471214:
             SEASON_TOTAL = json['goalsToDate']
             if SEASON_TOTAL in SEASON_TOTAL_SET:
                 pass
