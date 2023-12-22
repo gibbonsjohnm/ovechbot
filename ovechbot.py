@@ -64,9 +64,9 @@ def get_goals(list):
                 AWAY_TEAM = game['awayTeam']['abbrev']
                 if game['gameState'] == "LIVE":
                     OVECHKIN_GAME_ACTIVE = True
-                    goals = game['goals']
                 else:
                     OVECHKIN_GAME_ACTIVE = False
+                goals = game['goals']
                 for goal in goals:
                     print(goal)
                     list.append(str(goal))
