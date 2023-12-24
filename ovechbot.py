@@ -62,7 +62,7 @@ def get_goals(list):
             if game['awayTeam']['abbrev'] == "WSH" or game['homeTeam']['abbrev'] == "WSH":
                 HOME_TEAM = game['homeTeam']['abbrev']
                 AWAY_TEAM = game['awayTeam']['abbrev']
-                if game['gameState'] == "LIVE":
+                if game['gameState'] == "LIVE" or game['gameState'] == "CRIT":
                     OVECHKIN_GAME_ACTIVE = True
                 else:
                     OVECHKIN_GAME_ACTIVE = False
