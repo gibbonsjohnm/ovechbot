@@ -66,16 +66,13 @@ def get_goals(list):
                     OVECHKIN_GAME_ACTIVE = True
                 else:
                     OVECHKIN_GAME_ACTIVE = False
-                try:
                     goals = game['goals']
                     for goal in goals:
                         list.append(str(goal))
                     break;
-                except KeyError:
-                    pass;
             else:
                 OVECHKIN_GAME_ACTIVE = False
-    except TypeError:
+    except (TypeError, KeyError) as error:
         pass
         
 def convert_to_json(string):
@@ -101,7 +98,7 @@ def detect_ovechkin_goal(json):
                 SEASON_TOTAL_SET.add(SEASON_TOTAL)
         else:
             pass
-    except TypeError:
+    except (TypeError, KeyError) as error:
         pass
 
 client.run(TOKEN)
