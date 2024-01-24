@@ -64,12 +64,12 @@ def get_goals(list):
                 AWAY_TEAM = game['awayTeam']['abbrev']
                 if game['gameState'] == "LIVE" or game['gameState'] == "CRIT":
                     OVECHKIN_GAME_ACTIVE = True
-                else:
-                    OVECHKIN_GAME_ACTIVE = False
                     goals = game['goals']
                     for goal in goals:
                         list.append(str(goal))
                     break;
+                else:
+                    OVECHKIN_GAME_ACTIVE = False
             else:
                 OVECHKIN_GAME_ACTIVE = False
     except (TypeError, KeyError) as error:
