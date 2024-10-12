@@ -14,7 +14,7 @@ logging.getLogger("discord.gateway").setLevel(logging.CRITICAL)
 client = discord.Client(intents=discord.Intents.default())
 TOKEN  = os.environ['DISCORD_TOKEN']
 
-INITIAL_TOTAL        = 822
+INITIAL_TOTAL        = 853
 SEASON_TOTAL         = 0
 SEASON_TOTAL_SET     = set([])
 OVECHKIN_GOAL        = False
