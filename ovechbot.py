@@ -45,8 +45,34 @@ async def check():
             json_obj = convert_to_json(goal)
             detect_ovechkin_goal(json_obj)
             if OVECHKIN_GOAL:
-                logging.info("Sending message to discord")
-                await channel.send(f':rotating_light: **Alexander Ovechkin has scored goal #{INITIAL_TOTAL + SEASON_TOTAL}** :rotating_light:')
+                logging.info(f"Ovechkin scored goal #{INITIAL_TOTAL + SEASON_TOTAL}! Sending messages.")
+                goals = INITIAL_TOTAL + SEASON_TOTAL
+
+                base_message = (
+                    f":rotating_light: **Alexander Ovechkin has scored goal #{goals}** :rotating_light:\n"
+                    "```\n"
+                    f"Goals remaining: {895 - goals if goals < 895 else 0}\n"
+                    "```"
+                )
+
+                special_message = None
+                if goals == 894:
+                    special_message = (
+                        "@here ⚠️ **Alexander Ovechkin has tied Wayne Gretzky's all-time goal record** ⚠️"
+                    )
+                elif goals == 895:
+                    special_message = (
+                        "@here 🥳 **Alexander Ovechkin has passed the Trump-loving, overrated doofus Wayne Gretzky "
+                        "for most goals in NHL history!!!** 🥳"
+                    )
+
+                # Send the base message
+                await channel.send(content=base_message)
+
+                # Send the special message separately if applicable
+                if special_message:
+                    await channel.send(content=special_message)
+
                 OVECHKIN_GOAL = False
 
 def get_goals(list):
